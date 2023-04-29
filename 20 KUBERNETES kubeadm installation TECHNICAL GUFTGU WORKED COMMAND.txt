@@ -1,0 +1,85 @@
+*******************COMMANDS FOR DEMO*******************
+
+sudo su
+apt-get update
+apt-get install apt-transport-https
+
+
+apt install docker.io -y
+docker --version
+systemctl start docker
+
+systemctl enable docker
+
+sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add 
+
+
+nano /etc/apt/sources.list.d/kubernetes.list
+
+copy and paste in nano file
+
+	deb http://apt.kubernetes.io/ kubernetes-xenial main
+
+cntrl x , Y , enter
+
+
+apt-get update
+
+apt-get install -y kubelet kubeadm kubectl kubernetes-cni
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Below command in MASTER NODE ONLY
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+BOOTSTRAPPING THE MASTER NODE (IN MASTER)
+
+kubeadm init
+ 
+
+COPY THE COMMAND TO RUN IN NODES & SAVE IN NOTEPAD
+
+#below commands  you will get after running init comand, run these command in master node only#
+
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+
+
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
+
+
+			OR
+
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml 
+ 
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
+
+
+
+
+obtional , xtra
+$kubeadm token create --print-join-command
+will get token add that in wroker node to gett connacted from worker to master
+
+
+CONFIGURE WORKER NODES (IN NODES)
+
+COPY LONG CODE PROVIDED MY MASTER IN NODE NOW LIKE CODE GIVEN BELOW
+#Below command we will get after init command, run this command in Worker Node 1 and Node2 to connect Master Node#
+
+e.g-1  kubeadm join 172.31.6.165:6443 --token kl9fhu.co2n90v3rxtqllrs --discovery-token-ca-cert-hash sha256:b0f8003d23dbf445e0132a53d7aa1922bdef8d553d9eca06e65c928322b3e7c0
+
+e.g 2   kubeadm join 172.31.45.240:6443 --token itwij4.7th4yvcev2zsssv8 --discovery-token-ca-cert-hash sha256:9adf15c2c32a8cf9629641c7e0b525df4538f717b860f8cdf7ac869711e9a0ff                                                                                         
+
+GO TO MASTER AND RUN THIS COMMAND, TO CHECK WHETHER NODE CONNECTED OR NOT
+kubectl get nodes
+
+**********************END************************************
